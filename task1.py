@@ -9,21 +9,27 @@ def decomposing(expression: str):
     arithmetic_sign = ['+', '*', '/', '-', '(', ')']
     current_value = ""
     start_position = 0
-    if expression[0] == "-":  # подумать, если - после скобки
+    list_of_exep = []
+    for i in range(len(expression)):
+        if expression[i] == '(':
+            if expression[i+1] == '-':
+                list_of_exep.append(i+1)
+    if expression[0] == "-":
         current_value = expression[0]
         start_position = 1
-    for i in expression[start_position:]:
-        if i in list_of_numbers:
-            current_value += i
-        elif i in arithmetic_sign:
+    for i in range(start_position, len(expression)):
+        if expression[i] in list_of_numbers:
+            current_value += expression[i]
+        elif expression[i] in arithmetic_sign and i not in list_of_exep:
             if current_value != "":
                 decomposed_expression.append(current_value)
-            decomposed_expression.append(i)
+            decomposed_expression.append(expression[i])
             current_value = ""
+        elif i in list_of_exep:
+            current_value += expression[i]
         else:
             print(f"'{i}' can't be used in arithmetic expression. Please correct you expression")
             exit(0)
-    decomposed_expression.append(current_value)
     return decomposed_expression
 
 
@@ -68,25 +74,6 @@ def calculating(decomp_expres):
     return answer
 
 
-# def calculating_brackets(decomp_expres: list):
-#     is_ready = True
-#     if '(' not in decomp_expres:
-#         return calculating(decomp_expres)
-#     for j in range(0, len(decomp_expres)):
-#         if is_ready is False:
-#             break
-#         if decomp_expres[j] == '(':
-#             for i in range(j, len(decomp_expres)):
-#                 if decomp_expres[i] == ')':
-#                     temp = [k for k in decomp_expres[:j]]
-#                     temp.append(calculating(decomp_expres[j + 1:i]))
-#                     for k in decomp_expres[i + 1:]:
-#                         temp.append(k)
-#                     decomp_expres = temp
-#                     is_ready = False
-#                     break
-#     return calculating(decomp_expres)
-
 def cal_br(decomp_expres):
     for i in range(0, len(decomp_expres)):
         if decomp_expres[i] == '(':
@@ -107,8 +94,7 @@ def cal_br(decomp_expres):
         return calculating(result_br)
 
 
-arithmetic_expression = "(-10*(3+2))*4"
-print(decomposing(arithmetic_expression))
+arithmetic_expression = "(-10*(-3*(2+1)))/(4+1)+(20*6)"
 result = decomposing(arithmetic_expression)
 result = cal_br(result)
-print(result)
+print(f"{arithmetic_expression} = {result}")
