@@ -30,6 +30,8 @@ def decomposing(expression: str):
         else:
             print(f"'{i}' can't be used in arithmetic expression. Please correct you expression")
             exit(0)
+    if current_value != '':
+        decomposed_expression.append(current_value)
     return decomposed_expression
 
 
@@ -75,26 +77,27 @@ def calculating(decomp_expres):
 
 
 def cal_br(decomp_expres):
-    for i in range(0, len(decomp_expres)):
-        if decomp_expres[i] == '(':
-            n = i
-    for i in range(n, len(decomp_expres)):
-        if decomp_expres[i] == ')':
-            k = i
-            break
-    temp_br = [i for i in decomp_expres[n+1:k]]
-    temp_br = calculating(temp_br)
-    result_br = [i for i in decomp_expres[:n]]
-    result_br.append(temp_br)
-    for i in decomp_expres[k+1:]:
-        result_br.append(i)
-    if '(' in result_br:
-        return cal_br(result_br)
-    else:
-        return calculating(result_br)
+    if '(' in decomp_expres:
+        for i in range(0, len(decomp_expres)):
+            if decomp_expres[i] == '(':
+                n = i
+        for i in range(n, len(decomp_expres)):
+            if decomp_expres[i] == ')':
+                k = i
+                break
+        temp_br = [i for i in decomp_expres[n+1:k]]
+        temp_br = calculating(temp_br)
+        result_br = [i for i in decomp_expres[:n]]
+        result_br.append(temp_br)
+        for i in decomp_expres[k+1:]:
+            result_br.append(i)
+        decomp_expres = result_br
+        if '(' in decomp_expres:
+            return cal_br(decomp_expres)
+    return calculating(decomp_expres)
 
 
-arithmetic_expression = "(-10*(-3*(2+1)))/(4+1)+(20*6)"
+arithmetic_expression = "1+10/2*(5+5-6)"
 result = decomposing(arithmetic_expression)
 result = cal_br(result)
 print(f"{arithmetic_expression} = {result}")
